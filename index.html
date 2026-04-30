@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MG Bookkeeping Solutions LLC</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0d1b36; --navy-light: #162850; --navy-dark: #07101f;
+    --gold: #c9a84c; --gold-light: #e8c97a; --gold-pale: rgba(201,168,76,0.1);
+    --cream: #faf8f3; --text-dark: #0d1b36; --text-muted: #6b7280;
+    --white: #ffffff; --border: #e5e0d5;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text-dark); overflow-x: hidden; }
+  .page { display: none; }
+  .page.active { display: block; }
+  nav { background: var(--navy-dark); padding: 1rem 2.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(201,168,76,0.2); }
+  .logo { font-family: 'Playfair Display', serif; color: var(--white); font-size: 1.1rem; font-weight: 600; cursor: pointer; line-height: 1.3; }
+  .logo span { color: var(--gold); display: block; font-size: 0.7rem; font-family: 'DM Sans', sans-serif; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+  .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+  .nav-btn { font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; padding: 0.6rem 1.25rem; border-radius: 2px; cursor: pointer; letter-spacing: 0.05em; transition: all 0.2s; border: 1px solid rgba(201,168,76,0.4); color: rgba(255,255,255,0.8); background: transparent; }
+  .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-btn.active { background: var(--gold); color: var(--navy-dark); border-color: var(--gold); }
+  .nav-btn.cta { background: var(--gold); color: var(--navy-dark); border-color: var(--gold); margin-left: 0.5rem; }
+  .nav-btn.cta:hover { background: var(--gold-light); }
+  .hero { padding: 6rem 2rem 5rem; text-align: center; position: relative; overflow: hidden; }
+  .hero-line { width: 36px; height: 2px; background: var(--gold); margin: 0 auto 1.25rem; }
+  .hero-eyebrow { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.1rem; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 600; line-height: 1.18; max-width: 700px; margin: 0 auto 1.4rem; }
+  .hero h1 em { font-style: italic; color: var(--gold); }
+  .hero p { font-size: 1rem; max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.8; font-weight: 300; }
+  .btn-primary { display: inline-block; background: var(--gold); color: var(--navy-dark); font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.85rem; padding: 0.85rem 2rem; border-radius: 2px; letter-spacing: 0.08em; text-transform: uppercase; transition: background 0.2s, transform 0.15s; cursor: pointer; border: none; }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .btn-outline { display: inline-block; background: transparent; color: var(--gold); font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 0.85rem; padding: 0.85rem 2rem; border-radius: 2px; letter-spacing: 0.08em; text-transform: uppercase; transition: all 0.2s; cursor: pointer; border: 1px solid rgba(201,168,76,0.5); margin-left: 0.75rem; }
+  .btn-outline:hover { background: rgba(201,168,76,0.1); border-color: var(--gold); }
+  .hero-navy { background: var(--navy); }
+  .hero-navy h1 { color: var(--white); }
+  .hero-navy p { color: rgba(255,255,255,0.6); }
+  .hero-navy::before { content: ''; position: absolute; top: -100px; right: -100px; width: 500px; height: 500px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.1) 0%, transparent 65%); pointer-events: none; }
+  .hero-navy::after { content: ''; position: absolute; bottom: -80px; left: -80px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 65%); pointer-events: none; }
+  .hero-cream { background: var(--cream); border-bottom: 1px solid var(--border); }
+  .hero-cream h1 { color: var(--navy); }
+  .hero-cream p { color: var(--text-muted); }
+  .cred-strip { display: flex; justify-content: center; gap: 0; margin-top: 3.5rem; padding-top: 2.75rem; border-top: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
+  .cred-badge { display: flex; flex-direction: column; align-items: center; padding: 0 2.25rem; border-right: 1px solid rgba(255,255,255,0.1); }
+  .cred-badge:last-child { border-right: none; }
+  .cred-icon { width: 44px; height: 44px; border: 1px solid rgba(201,168,76,0.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 0.6rem; }
+  .cred-icon svg { width: 20px; height: 20px; fill: var(--gold); }
+  .cred-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--gold); font-weight: 600; margin-bottom: 0.15rem; }
+  .cred-label { font-size: 0.68rem; color: rgba(255,255,255,0.4); letter-spacing: 0.07em; text-transform: uppercase; text-align: center; max-width: 110px; }
+  section { padding: 5rem 2rem; }
+  .section-label { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.6rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.3rem); color: var(--navy); font-weight: 600; line-height: 1.25; margin-bottom: 1rem; }
+  .section-sub { color: var(--text-muted); max-width: 480px; line-height: 1.8; font-size: 0.925rem; }
+  .container { max-width: 1080px; margin: 0 auto; }
+  .text-center { text-align: center; }
+  .text-center .section-sub { margin: 0 auto; }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+  .service-card { background: var(--white); border: 1px solid var(--border); border-top: 2px solid var(--gold); border-radius: 2px; padding: 1.75rem; transition: box-shadow 0.2s, transform 0.2s; }
+  .service-card:hover { box-shadow: 0 8px 28px rgba(13,27,54,0.07); transform: translateY(-3px); }
+  .service-icon { width: 40px; height: 40px; background: var(--navy); border-radius: 2px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.1rem; }
+  .service-icon svg { width: 19px; height: 19px; fill: var(--gold); }
+  .service-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 0.5rem; font-weight: 600; }
+  .service-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.75; }
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+  .pricing-card { background: var(--white); border: 1px solid var(--border); border-radius: 2px; padding: 2rem; text-align: center; transition: transform 0.2s; }
+  .pricing-card:hover { transform: translateY(-3px); }
+  .pricing-card.featured { border: 2px solid var(--gold); position: relative; }
+  .pricing-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--navy-dark); font-size: 0.68rem; font-weight: 500; padding: 0.25rem 0.85rem; border-radius: 2rem; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  .pricing-tier { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 0.5rem; }
+  .pricing-price { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--navy); font-weight: 600; line-height: 1; }
+  .pricing-price span { font-size: 0.85rem; font-family: 'DM Sans', sans-serif; color: var(--text-muted); font-weight: 400; }
+  .pricing-desc { font-size: 0.82rem; color: var(--text-muted); margin: 0.75rem 0 1.25rem; line-height: 1.6; }
+  .pricing-features { list-style: none; text-align: left; margin-bottom: 1.5rem; }
+  .pricing-features li { font-size: 0.82rem; color: var(--text-muted); padding: 0.3rem 0; border-bottom: 1px solid var(--border); display: flex; gap: 0.5rem; align-items: flex-start; }
+  .pricing-features li:last-child { border-bottom: none; }
+  .pricing-features li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); flex-shrink: 0; margin-top: 6px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .why-list { list-style: none; display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1.75rem; }
+  .why-list li { display: flex; gap: 0.85rem; align-items: flex-start; }
+  .check { width: 18px; height: 18px; background: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 3px; }
+  .check svg { width: 9px; height: 9px; fill: var(--gold); }
+  .why-list li p { font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; }
+  .why-list li strong { color: var(--text-dark); font-weight: 500; display: block; margin-bottom: 0.15rem; font-size: 0.9rem; }
+  .is-card { background: var(--navy); border-radius: 2px; padding: 2rem 2.25rem; border-top: 3px solid var(--gold); }
+  .is-header { margin-bottom: 1.25rem; padding-bottom: 0.9rem; border-bottom: 1px solid rgba(201,168,76,0.25); }
+  .is-company { font-family: 'Playfair Display', serif; color: var(--white); font-size: 0.95rem; font-weight: 600; }
+  .is-title { font-size: 0.68rem; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.15rem; }
+  .is-period { font-size: 0.68rem; color: var(--gold); letter-spacing: 0.07em; text-transform: uppercase; margin-top: 0.1rem; }
+  .is-section-label { font-size: 0.63rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin: 1.1rem 0 0.5rem; }
+  .is-row { display: flex; justify-content: space-between; padding: 0.28rem 0; }
+  .is-row-label { font-size: 0.8rem; color: rgba(255,255,255,0.55); }
+  .is-row-val { font-size: 0.8rem; color: rgba(255,255,255,0.8); font-variant-numeric: tabular-nums; }
+  .is-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 0.4rem 0; }
+  .is-subtotal { display: flex; justify-content: space-between; padding: 0.35rem 0; }
+  .is-subtotal-label { font-size: 0.8rem; color: var(--white); font-weight: 500; }
+  .is-subtotal-val { font-size: 0.8rem; color: var(--white); font-weight: 500; }
+  .is-total { display: flex; justify-content: space-between; padding: 0.7rem 0.75rem; background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.25); border-radius: 2px; margin-top: 0.65rem; }
+  .is-total-label { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: var(--white); font-weight: 600; }
+  .is-total-val { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--gold); font-weight: 600; }
+  .is-note { font-size: 0.63rem; color: rgba(255,255,255,0.22); margin-top: 0.85rem; }
+  .deliverables-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 3rem; }
+  .deliverable-card { background: var(--navy); border-radius: 2px; padding: 1.5rem; border-left: 3px solid var(--gold); }
+  .deliverable-card h4 { font-family: 'Playfair Display', serif; color: var(--white); font-size: 0.95rem; margin-bottom: 0.4rem; font-weight: 600; }
+  .deliverable-card p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.65; }
+  .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .process-step { text-align: center; padding: 1.5rem 1rem; }
+  .step-num { width: 44px; height: 44px; border: 1px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--gold); font-weight: 600; }
+  .process-step h4 { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--navy); margin-bottom: 0.4rem; font-weight: 600; }
+  .process-step p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.65; }
+  .contact-bg { background: var(--navy); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; align-items: start; }
+  .contact-info .section-title { color: var(--white); }
+  .contact-info .section-sub { color: rgba(255,255,255,0.5); }
+  .contact-detail { display: flex; gap: 0.85rem; align-items: flex-start; margin-top: 1.75rem; }
+  .contact-detail-icon { width: 32px; height: 32px; border: 1px solid rgba(201,168,76,0.35); border-radius: 2px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .contact-detail-icon svg { width: 14px; height: 14px; fill: var(--gold); }
+  .contact-detail p { font-size: 0.82rem; color: rgba(255,255,255,0.42); }
+  .contact-detail strong { color: var(--white); font-weight: 500; display: block; margin-bottom: 0.1rem; font-size: 0.875rem; }
+  .form-card { background: var(--white); border-radius: 2px; padding: 2.25rem; border-top: 3px solid var(--gold); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
+  .form-group label { font-size: 0.7rem; font-weight: 500; color: var(--text-dark); letter-spacing: 0.08em; text-transform: uppercase; }
+  .form-group input, .form-group textarea, .form-group select { background: var(--cream); border: 1px solid var(--border); border-radius: 2px; padding: 0.68rem 0.85rem; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-dark); outline: none; transition: border-color 0.2s; resize: none; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--gold); }
+  .form-group textarea { height: 100px; }
+  .submit-btn { width: 100%; background: var(--navy); color: var(--white); border: none; padding: 0.9rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; border-radius: 2px; cursor: pointer; transition: background 0.2s; margin-top: 0.4rem; }
+  .submit-btn:hover { background: var(--navy-light); }
+  .success-msg { display: none; text-align: center; padding: 0.9rem; background: #f0faf4; border: 1px solid #86efac; border-radius: 2px; color: #166534; font-size: 0.85rem; margin-top: 0.9rem; }
+  .bg-white { background: var(--white); }
+  .bg-cream { background: var(--cream); }
+  .bg-navy { background: var(--navy); }
+  .bg-navy .section-title { color: var(--white); }
+  .bg-navy .section-sub { color: rgba(255,255,255,0.55); }
+  footer { background: var(--navy-dark); padding: 1.75rem 2.5rem; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(201,168,76,0.15); }
+  footer p { font-size: 0.75rem; color: rgba(255,255,255,0.28); }
+  footer span { color: var(--gold); }
+  @media (max-width: 768px) {
+    .two-col, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .cred-badge { border-right: none; padding: 0 1rem; }
+    .form-row { grid-template-columns: 1fr; }
+    nav { padding: 1rem 1.25rem; }
+    .nav-btn:not(.cta) { display: none; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">MG Bookkeeping Solutions<span>LLC — CPA · CCIFP</span></div>
+  <div class="nav-right">
+    <button class="nav-btn" id="nav-bk" onclick="showPage('bookkeeping')">Get My Books in Order</button>
+    <button class="nav-btn" id="nav-cfo" onclick="showPage('cfo')">Grow My Business</button>
+    <button class="nav-btn cta" onclick="showPage('home'); setTimeout(()=>document.getElementById('contact').scrollIntoView({behavior:'smooth'}),100)">Contact Us</button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero hero-navy">
+    <div class="hero-line"></div>
+    <div class="hero-eyebrow">CPA · CCIFP · QuickBooks Certified</div>
+    <h1>Financial Expertise <em>Your Business</em> Can Rely On</h1>
+    <p>From clean books to big-picture strategy, MG Bookkeeping Solutions delivers CPA-level financial management for small businesses and contractors ready to grow.</p>
+    <button class="btn-primary" onclick="showPage('bookkeeping')">Get My Books in Order</button>
+    <button class="btn-outline" onclick="showPage('cfo')">Grow My Business</button>
+    <div class="cred-strip">
+      <div class="cred-badge">
+        <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg></div>
+        <div class="cred-title">CPA</div>
+        <div class="cred-label">Certified Public Accountant</div>
+      </div>
+      <div class="cred-badge">
+        <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg></div>
+        <div class="cred-title">CCIFP</div>
+        <div class="cred-label">Construction Industry Specialist</div>
+      </div>
+      <div class="cred-badge">
+        <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>
+        <div class="cred-title">QuickBooks</div>
+        <div class="cred-label">QuickBooks Online Certified</div>
+      </div>
+      <div class="cred-badge">
+        <div class="cred-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div>
+        <div class="cred-title">Licensed</div>
+        <div class="cred-label">Fully Licensed & Insured</div>
+      </div>
+    </div>
+  </div>
+
+  <section class="bg-white">
+    <div class="container">
+      <div class="text-center" style="margin-bottom:3rem;">
+        <div class="section-label">Our Services</div>
+        <h2 class="section-title">Two Ways We Can Help</h2>
+        <p class="section-sub">Whether you need your books cleaned up or a strategic financial partner, we have you covered.</p>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+        <div style="background:var(--cream);border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:2px;padding:2.5rem;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(13,27,54,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('bookkeeping')">
+          <div style="width:44px;height:44px;background:var(--navy);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:var(--gold)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+          <div style="font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Bookkeeping Services</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--navy);margin-bottom:0.75rem;font-weight:600;">Get My Books in Order</h3>
+          <p style="font-size:0.875rem;color:var(--text-muted);line-height:1.75;margin-bottom:1.5rem;">Accurate monthly bookkeeping, QuickBooks management, and financial reporting — all reviewed by a licensed CPA.</p>
+          <span style="font-size:0.8rem;color:var(--gold);font-weight:500;letter-spacing:0.06em;text-transform:uppercase;">Learn More →</span>
+        </div>
+        <div style="background:var(--navy);border:1px solid rgba(201,168,76,0.2);border-top:3px solid var(--gold);border-radius:2px;padding:2.5rem;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 32px rgba(7,16,31,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''" onclick="showPage('cfo')">
+          <div style="width:44px;height:44px;border:1px solid rgba(201,168,76,0.4);border-radius:2px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;"><svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:var(--gold)"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div>
+          <div style="font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;">Fractional CFO Services</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--white);margin-bottom:0.75rem;font-weight:600;">Grow My Business</h3>
+          <p style="font-size:0.875rem;color:rgba(255,255,255,0.55);line-height:1.75;margin-bottom:1.5rem;">Strategic financial leadership — forecasting, cash flow, KPIs, and advisory — without the cost of a full-time CFO.</p>
+          <span style="font-size:0.8rem;color:var(--gold);font-weight:500;letter-spacing:0.06em;text-transform:uppercase;">Learn More →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-bg" id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-label">Get In Touch</div>
+          <h2 class="section-title">Let's Talk About Your Business</h2>
+          <p class="section-sub">Schedule a free 30-minute consultation — no pressure, no commitment.</p>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><div><strong>Email</strong><p>hello@mgbookkeepingsolutions.com</p></div></div>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div><div><strong>Phone</strong><p>(555) 000-0000</p></div></div>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div><div><strong>Location</strong><p>Serving clients nationwide, remotely</p></div></div>
+        </div>
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="h-fname" placeholder="Jane"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="h-lname" placeholder="Smith"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="h-email" placeholder="jane@yourbusiness.com"></div>
+          <div class="form-group"><label>I'm interested in</label><select><option value="">Select a service...</option><option>Bookkeeping Services</option><option>Fractional CFO Services</option><option>Both / Not Sure Yet</option></select></div>
+          <div class="form-group"><label>Message</label><textarea id="h-msg" placeholder="Tell me a bit about your business..."></textarea></div>
+          <button class="submit-btn" onclick="handleSubmit('h-fname','h-email','h-success')">Send Message →</button>
+          <div class="success-msg" id="h-success">Thank you! I'll be in touch within 1 business day.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>© 2025 <span>MG Bookkeeping Solutions LLC</span> · CPA · CCIFP · All rights reserved.</p>
+    <p style="font-size:0.7rem;color:rgba(255,255,255,0.18);">Professional financial services for small businesses nationwide.</p>
+  </footer>
+</div>
+
+<!-- BOOKKEEPING PAGE -->
+<div class="page" id="page-bookkeeping">
+  <div class="hero hero-cream">
+    <div class="hero-line"></div>
+    <div class="hero-eyebrow">Bookkeeping Services</div>
+    <h1>Clean Books. <em>Clear Picture.</em> Every Month.</h1>
+    <p>CPA-level bookkeeping for small businesses and contractors who want accurate financials without the headache — delivered on time, every time.</p>
+    <button class="btn-primary" onclick="document.getElementById('bk-contact').scrollIntoView({behavior:'smooth'})">Book a Free Consultation</button>
+  </div>
+  <section class="bg-white">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">What's Included</div>
+        <h2 class="section-title">Everything Your Books Need</h2>
+        <p class="section-sub">No piecemeal services — we handle your full bookkeeping function so nothing falls through the cracks.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div><h3>Monthly Bookkeeping</h3><p>Accurate recording and categorization of every transaction, reconciled monthly so your books are always current.</p></div>
+        <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div><h3>Accounts Payable & Receivable</h3><p>Track what you owe and what you're owed. We manage invoicing and payments to keep cash flow healthy.</p></div>
+        <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg></div><h3>Financial Reporting</h3><p>Monthly P&L, balance sheet, and cash flow reports delivered by the 10th — in plain language you can actually use.</p></div>
+        <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div><h3>QuickBooks Online Setup</h3><p>Full setup, chart of accounts customization, and ongoing management so your QuickBooks actually reflects your business.</p></div>
+        <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg></div><h3>Tax Preparation Support</h3><p>Year-round organization so tax season is stress-free. Records clean and ready for your CPA or for filing.</p></div>
+        <div class="service-card"><div class="service-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></div><h3>Catch-Up Bookkeeping</h3><p>Months or a full year behind? We'll get you caught up quickly and accurately — no judgment, just results.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-cream">
+    <div class="container">
+      <div class="two-col">
+        <div>
+          <div class="section-label">Why MG Bookkeeping Solutions</div>
+          <h2 class="section-title">A Higher Standard of Financial Care</h2>
+          <p class="section-sub">Most bookkeepers aren't CPAs. We are — and that difference shows in every reconciliation, every report, and every client relationship.</p>
+          <ul class="why-list">
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><strong>CPA-Level Accuracy</strong><p>Every entry reviewed with the rigor of a licensed CPA — not just a bookkeeper.</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><strong>Construction Industry Specialist</strong><p>CCIFP-certified expertise for contractors — job costing, WIP, and more.</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><strong>Always Delivered On Time</strong><p>Monthly reports by the 10th of every month. No chasing, no delays.</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><strong>Flat Monthly Pricing</strong><p>Predictable fees with no surprise invoices — ever.</p></div></li>
+          </ul>
+        </div>
+        <div class="is-card">
+          <div class="is-header">
+            <div class="is-company">ABC Construction LLC</div>
+            <div class="is-title">Income Statement</div>
+            <div class="is-period">For the Month Ended March 31, 2025</div>
+          </div>
+          <div class="is-section-label">Revenue</div>
+          <div class="is-row"><span class="is-row-label">Contract Revenue</span><span class="is-row-val">$48,500</span></div>
+          <hr class="is-divider">
+          <div class="is-subtotal"><span class="is-subtotal-label">Total Revenue</span><span class="is-subtotal-val">$48,500</span></div>
+          <div class="is-section-label">Cost of Revenue Sold</div>
+          <div class="is-row"><span class="is-row-label">Direct Labor</span><span class="is-row-val">$14,800</span></div>
+          <div class="is-row"><span class="is-row-label">Materials & Supplies</span><span class="is-row-val">$11,200</span></div>
+          <div class="is-row"><span class="is-row-label">Subcontractors</span><span class="is-row-val">$6,400</span></div>
+          <hr class="is-divider">
+          <div class="is-subtotal"><span class="is-subtotal-label">Gross Profit</span><span class="is-subtotal-val">$16,100</span></div>
+          <div class="is-section-label">Operating Expenses</div>
+          <div class="is-row"><span class="is-row-label">Payroll & Admin</span><span class="is-row-val">$4,200</span></div>
+          <div class="is-row"><span class="is-row-label">Insurance</span><span class="is-row-val">$1,800</span></div>
+          <div class="is-row"><span class="is-row-label">Equipment & Tools</span><span class="is-row-val">$950</span></div>
+          <div class="is-row"><span class="is-row-label">Office & Software</span><span class="is-row-val">$620</span></div>
+          <hr class="is-divider">
+          <div class="is-total"><span class="is-total-label">Net Income</span><span class="is-total-val">$8,530</span></div>
+          <div class="is-note">* Sample report for illustrative purposes only.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-white">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">Simple Pricing</div>
+        <h2 class="section-title">Flat Monthly Rates</h2>
+        <p class="section-sub">No surprise invoices. No hourly billing. Just predictable, all-inclusive monthly pricing.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Starter</div>
+          <div class="pricing-price">$500<span>/mo</span></div>
+          <div class="pricing-desc">For sole proprietors and freelancers with straightforward finances.</div>
+          <ul class="pricing-features"><li>Monthly bookkeeping</li><li>Bank & credit card reconciliation</li><li>Monthly P&L report</li><li>QuickBooks management</li><li>Up to 75 transactions/mo</li></ul>
+          <button class="btn-primary" style="width:100%;font-size:0.8rem;padding:0.7rem;" onclick="document.getElementById('bk-contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-tier">Growth</div>
+          <div class="pricing-price">$900<span>/mo</span></div>
+          <div class="pricing-desc">For small businesses and contractors ready to get serious about their finances.</div>
+          <ul class="pricing-features"><li>Everything in Starter</li><li>Accounts payable & receivable</li><li>Full financial reporting package</li><li>Job costing (construction)</li><li>Up to 200 transactions/mo</li><li>Tax prep support</li></ul>
+          <button class="btn-primary" style="width:100%;font-size:0.8rem;padding:0.7rem;" onclick="document.getElementById('bk-contact').scrollIntoView({behavior:'smooth'})">Get Started</button>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Custom</div>
+          <div class="pricing-price" style="font-size:1.6rem;padding-top:0.25rem;">Let's Talk</div>
+          <div class="pricing-desc">For larger businesses or complex needs including catch-up bookkeeping.</div>
+          <ul class="pricing-features"><li>Everything in Growth</li><li>Unlimited transactions</li><li>Multi-entity support</li><li>Custom reporting</li><li>Priority response</li><li>Dedicated monthly review call</li></ul>
+          <button class="btn-primary" style="width:100%;font-size:0.8rem;padding:0.7rem;" onclick="document.getElementById('bk-contact').scrollIntoView({behavior:'smooth'})">Contact Us</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="contact-bg" id="bk-contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-label">Get Started</div>
+          <h2 class="section-title">Book a Free Consultation</h2>
+          <p class="section-sub">30 minutes, no pressure. We'll talk through your business and figure out exactly what you need.</p>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><div><strong>Email</strong><p>hello@mgbookkeepingsolutions.com</p></div></div>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div><div><strong>Phone</strong><p>(555) 000-0000</p></div></div>
+        </div>
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="bk-fname" placeholder="Jane"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="bk-lname" placeholder="Smith"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="bk-email" placeholder="jane@yourbusiness.com"></div>
+          <div class="form-group"><label>Business Type</label><select><option value="">Select...</option><option>Sole Proprietor</option><option>LLC</option><option>S-Corp</option><option>Construction / Contractor</option><option>Other</option></select></div>
+          <div class="form-group"><label>Plan Interest</label><select><option value="">Select...</option><option>Starter — $500/mo</option><option>Growth — $900/mo</option><option>Custom / Not Sure</option></select></div>
+          <div class="form-group"><label>Message</label><textarea id="bk-msg" placeholder="Tell me about your business..."></textarea></div>
+          <button class="submit-btn" onclick="handleSubmit('bk-fname','bk-email','bk-success')">Send Message →</button>
+          <div class="success-msg" id="bk-success">Thank you! I'll be in touch within 1 business day.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>© 2025 <span>MG Bookkeeping Solutions LLC</span> · CPA · CCIFP · All rights reserved.</p>
+    <p style="font-size:0.7rem;color:rgba(255,255,255,0.18);">Professional financial services for small businesses nationwide.</p>
+  </footer>
+</div>
+
+<!-- CFO PAGE -->
+<div class="page" id="page-cfo">
+  <div class="hero hero-navy">
+    <div class="hero-line"></div>
+    <div class="hero-eyebrow">Fractional CFO Services</div>
+    <h1>Strategic Financial Leadership, <em>Without</em> the Full-Time Cost</h1>
+    <p>Get a seasoned CPA in your corner — helping you forecast, plan, and make the financial decisions that actually grow your business.</p>
+    <button class="btn-primary" onclick="document.getElementById('cfo-contact').scrollIntoView({behavior:'smooth'})">Schedule a Strategy Call</button>
+  </div>
+  <section class="bg-white">
+    <div class="container">
+      <div class="two-col" style="gap:4rem;">
+        <div>
+          <div class="section-label">Is This Right for You?</div>
+          <h2 class="section-title">You're Ready for a Fractional CFO If...</h2>
+          <ul class="why-list" style="margin-top:1.5rem;">
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><p>Your revenue is growing but you're not sure where the money is going</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><p>You're making big decisions without a clear financial picture</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><p>You need to apply for a loan or line of credit and want to be prepared</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><p>You're a contractor who needs job-level profitability analysis</p></div></li>
+            <li><div class="check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div><p>You want a trusted financial voice in strategic decisions — not just a bookkeeper</p></div></li>
+          </ul>
+        </div>
+        <div style="background:var(--cream);border:1px solid var(--border);border-top:3px solid var(--gold);border-radius:2px;padding:2.25rem;">
+          <div class="section-label">The Difference</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--navy);margin-bottom:1.5rem;font-weight:600;">Bookkeeper vs. Fractional CFO</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:2px;overflow:hidden;">
+            <div style="padding:0.75rem 1rem;background:var(--navy);font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">Bookkeeper</div>
+            <div style="padding:0.75rem 1rem;background:var(--navy);font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);border-left:1px solid rgba(255,255,255,0.1);">Fractional CFO</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-muted);border-top:1px solid var(--border);">Records what happened</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-dark);border-top:1px solid var(--border);border-left:1px solid var(--border);font-weight:500;">Explains why & what to do</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-muted);border-top:1px solid var(--border);">Looks backward</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-dark);border-top:1px solid var(--border);border-left:1px solid var(--border);font-weight:500;">Looks forward</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-muted);border-top:1px solid var(--border);">Categorizes transactions</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-dark);border-top:1px solid var(--border);border-left:1px solid var(--border);font-weight:500;">Drives financial strategy</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-muted);border-top:1px solid var(--border);">Reports numbers</div>
+            <div style="padding:0.6rem 1rem;font-size:0.82rem;color:var(--text-dark);border-top:1px solid var(--border);border-left:1px solid var(--border);font-weight:500;">Interprets & advises</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-cream">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">What You Get</div>
+        <h2 class="section-title">CFO Services That Move the Needle</h2>
+        <p class="section-sub">Hands-on financial leadership tailored to where your business is — and where you want it to go.</p>
+      </div>
+      <div class="deliverables-grid">
+        <div class="deliverable-card"><h4>Cash Flow Forecasting</h4><p>Know what's coming in and out — weeks and months ahead — so you're never caught off guard.</p></div>
+        <div class="deliverable-card"><h4>Budgeting & Planning</h4><p>Annual budgets built around your goals, monitored monthly, and adjusted as your business evolves.</p></div>
+        <div class="deliverable-card"><h4>KPI Dashboards</h4><p>Custom financial dashboards so you always know which numbers matter and what they're telling you.</p></div>
+        <div class="deliverable-card"><h4>Job Profitability Analysis</h4><p>For contractors — know which jobs are making money and which are costing you. CCIFP-certified expertise.</p></div>
+        <div class="deliverable-card"><h4>Lender & Banking Support</h4><p>Loan applications, lines of credit, and banking relationships managed with professional financial packaging.</p></div>
+        <div class="deliverable-card"><h4>Strategic Advisory</h4><p>A trusted financial voice at the table for major decisions — pricing, hiring, expansion, and more.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="bg-white">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">How It Works</div>
+        <h2 class="section-title">Getting Started Is Simple</h2>
+      </div>
+      <div class="process-steps">
+        <div class="process-step"><div class="step-num">1</div><h4>Strategy Call</h4><p>A free 30-minute conversation to understand your business, your goals, and your challenges.</p></div>
+        <div class="process-step"><div class="step-num">2</div><h4>Financial Review</h4><p>We dig into your current financials to understand where you stand and where the opportunities are.</p></div>
+        <div class="process-step"><div class="step-num">3</div><h4>Custom Engagement</h4><p>A tailored scope of work built around exactly what your business needs — nothing more, nothing less.</p></div>
+        <div class="process-step"><div class="step-num">4</div><h4>Ongoing Partnership</h4><p>Monthly check-ins, real-time support, and proactive financial guidance as your business grows.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="contact-bg" id="cfo-contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info">
+          <div class="section-label">Let's Talk Strategy</div>
+          <h2 class="section-title">Schedule Your Free Strategy Call</h2>
+          <p class="section-sub">No pitch, no pressure. Just a real conversation about your business and how strategic financial leadership can help you grow.</p>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><div><strong>Email</strong><p>hello@mgbookkeepingsolutions.com</p></div></div>
+          <div class="contact-detail"><div class="contact-detail-icon"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></div><div><strong>Phone</strong><p>(555) 000-0000</p></div></div>
+        </div>
+        <div class="form-card">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="cfo-fname" placeholder="Jane"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="cfo-lname" placeholder="Smith"></div>
+          </div>
+          <div class="form-group"><label>Email</label><input type="email" id="cfo-email" placeholder="jane@yourbusiness.com"></div>
+          <div class="form-group"><label>Annual Revenue (approx.)</label><select><option value="">Select...</option><option>Under $500K</option><option>$500K – $1M</option><option>$1M – $3M</option><option>$3M – $10M</option><option>$10M+</option></select></div>
+          <div class="form-group"><label>Industry</label><select><option value="">Select...</option><option>Construction / Contracting</option><option>Professional Services</option><option>Retail / E-commerce</option><option>Real Estate</option><option>Other</option></select></div>
+          <div class="form-group"><label>What's your biggest financial challenge?</label><textarea id="cfo-msg" placeholder="Tell me what's keeping you up at night financially..."></textarea></div>
+          <button class="submit-btn" onclick="handleSubmit('cfo-fname','cfo-email','cfo-success')">Schedule Strategy Call →</button>
+          <div class="success-msg" id="cfo-success">Thank you! I'll reach out within 1 business day to schedule your call.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <p>© 2025 <span>MG Bookkeeping Solutions LLC</span> · CPA · CCIFP · All rights reserved.</p>
+    <p style="font-size:0.7rem;color:rgba(255,255,255,0.18);">Professional financial services for small businesses nationwide.</p>
+  </footer>
+</div>
+
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+  document.querySelectorAll('.nav-btn:not(.cta)').forEach(b => b.classList.remove('active'));
+  if (name === 'bookkeeping') document.getElementById('nav-bk').classList.add('active');
+  if (name === 'cfo') document.getElementById('nav-cfo').classList.add('active');
+}
+function handleSubmit(fnameId, emailId, successId) {
+  const fname = document.getElementById(fnameId).value.trim();
+  const email = document.getElementById(emailId).value.trim();
+  if (!fname || !email) { alert('Please fill in your name and email.'); return; }
+  document.getElementById(successId).style.display = 'block';
+  event.target.textContent = 'Sent!';
+  event.target.disabled = true;
+}
+</script>
+</body>
+</html>
